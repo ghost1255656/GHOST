@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Editz | Enter the Dark Realm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Sans+Sinhala:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Noto Sans Sinhala', sans-serif; background-color: #000; color: #fff; margin: 0; overflow-x: hidden; }
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        /* පසුබිම් වීඩියෝව සඳහා CSS */
+        #bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: -1; }
+
+        /* Car game card image hover effect */
+        .car-img-link img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .car-img-link:hover img {
+            transform: scale(1.04);
+            box-shadow: 0 0 24px rgba(220,38,38,0.8);
+        }
+        .car-img-link:hover .download-label {
+            color: #f87171;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <video id="bgVideo" loop playsinline>
+        <source src="https://stupid-scarlet-6b5dcdfenc.edgeone.app/snaptik_7501338872329112840_v3.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+
+    <!-- පසුබිම් වීඩියෝ පාලනය සඳහා බොත්තම -->
+    <div class="fixed top-20 left-4 z-50">
+        <button id="playPauseBtn" onclick="toggleBgVideo()" class="bg-red-600/80 hover:bg-red-700 text-white px-4 py-2 rounded-full font-bold shadow-lg backdrop-blur-sm">
+            Play/Pause BG
+        </button>
+    </div>
+
+    <nav class="p-4 flex justify-between items-center px-6 sticky top-0 bg-black/30 backdrop-blur-md z-40">
+        <div class="flex items-center gap-2"><span class="text-2xl">💀</span><h1 class="text-xl font-bold text-red-600 font-dancing">Ghost Editz</h1></div>
+        <div class="flex gap-4 text-xs font-bold uppercase tracking-widest">
+            <button onclick="showPage('home')" class="hover:text-red-500 transition">Home</button>
+            <button onclick="showPage('games')" class="hover:text-red-500 transition">Games</button>
+            <button onclick="showPage('contact')" class="hover:text-red-500 transition">Contact NB</button>
+        </div>
+    </nav>
+
+    <main class="flex flex-col items-center mt-6 px-4">
+        <section id="home" class="w-full max-w-sm text-center">
+            <h2 class="text-5xl font-dancing text-red-500 mb-2 drop-shadow-lg mt-10">GHOST EDITZ</h2>
+            <div class="grid grid-cols-2 gap-4 mt-8">
+                <div onclick="showPage('games')" class="bg-zinc-900/50 p-6 rounded-2xl cursor-pointer hover:border-red-500 border border-transparent transition">🎮<h3 class="font-dancing text-red-400">Games</h3></div>
+                <div onclick="showPage('contact')" class="bg-zinc-900/50 p-6 rounded-2xl cursor-pointer hover:border-red-500 border border-transparent transition">💬<h3 class="font-dancing text-red-400">Contact</h3></div>
+            </div>
+        </section>
+
+        <section id="games" class="hidden w-full max-w-2xl text-center p-6 rounded-lg bg-zinc-900/80">
+            <h2 class="text-3xl text-red-500 mb-6 font-dancing">Games</h2>
+
+            <!-- Games Table / Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+
+                <!-- Card 1: Ghost Runner -->
+                <div class="bg-zinc-800/80 rounded-2xl border border-red-900/40 p-4 flex flex-col items-center">
+                    <h3 class="text-xl font-dancing text-red-400 mb-3">Ghost Runner</h3>
+                    <img src="https://increased-teal-pqxs3vlrpk.edgeone.app/Picsart_26-05-19_14-15-03-658.jpg" class="w-full h-40 object-cover rounded border-2 border-red-800 shadow-lg mb-3" alt="Ghost Runner Banner" onerror="this.style.display='none'">
+                    <img src="https://religious-yellow-e72548mcrt.edgeone.app/Picsart_26-05-19_15-18-24-421.jpg" class="w-16 h-16 mx-auto mb-3 rounded-full border border-red-500" alt="Ghost Runner Icon">
+                    <a href="https://cdn.applikeweb.com/downloads/android_3ac5db52-3eef-40b4-90ea-5a952b484914_1.0.0.apk" class="block w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg shadow-[0_0_15px_rgba(220,38,38,0.7)] transition transform hover:scale-105 text-sm">
+                        Click to Download Game (APK)
+                    </a>
+                    <button id="startBtn" onclick="startGame()" class="mt-3 w-full bg-red-800 hover:bg-red-700 px-6 py-2 rounded-full font-bold text-sm transition">Start Game</button>
+                    <div id="gameUI" class="hidden w-full mt-3">
+                        <div id="scoreBoard" class="text-lg text-red-400 mb-2">Score: 0</div>
+                        <canvas id="gameCanvas" width="400" height="150" class="w-full bg-black/50 rounded-lg border border-red-900"></canvas>
+                        <button onclick="jump()" class="mt-3 bg-zinc-700 px-8 py-2 rounded-full font-bold text-sm">Jump</button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Car Game -->
+                <div class="bg-zinc-800/80 rounded-2xl border border-red-900/40 p-4 flex flex-col items-center">
+                    <h3 class="text-xl font-dancing text-red-400 mb-3">Car Game</h3>
+
+                    <!-- Clickable image that opens the download link -->
+                    <a href="https://www.mediafire.com/file/ryfwsv88pstwm5k/offline_apk.7z/file" target="_blank" class="car-img-link block w-full cursor-pointer">
+                        <img src="https://greasy-violet-l12qepu7ul.edgeone.app/images.jpeg" 
+                             class="w-full h-40 object-cover rounded border-2 border-red-800 shadow-lg mb-2" 
+                             alt="Car Game"
+                             onerror="this.style.background='linear-gradient(135deg,#1a1a1a,#3d0000)'; this.style.height='160px';">
+                        <p class="download-label text-red-300 font-bold text-sm mt-2 transition-colors duration-200">
+                            🚗 Click img and download the car game
+                        </p>
+                    </a>
+
+                    <a href="https://www.mediafire.com/file/ryfwsv88pstwm5k/offline_apk.7z/file" target="_blank"
+                       class="block w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg shadow-[0_0_15px_rgba(220,38,38,0.7)] transition transform hover:scale-105 text-sm">
+                        ⬇️ Download Car Game (.7z)
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="contact" class="hidden w-full max-w-xs text-center bg-zinc-900/50 p-6 rounded-2xl border border-red-900/30">
+            <a href="https://wa.me/94743019225" target="_blank">
+                <img src="https://religious-yellow-e72548mcrt.edgeone.app/Picsart_26-05-19_15-18-24-421.jpg" class="w-32 h-32 mx-auto rounded-full border-4 border-red-900 shadow-xl" alt="Contact Photo">
+            </a>
+            <p class="mt-4 font-mono text-red-400">0743019225</p>
+        </section>
+    </main>
+
+    <!-- Game Over Video Overlay -->
+    <div id="gameOverOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:9999; flex-direction:column; align-items:center; justify-content:center;">
+        <h2 style="font-family:'Dancing Script',cursive; color:#ef4444; font-size:2.5rem; margin-bottom:16px; text-shadow:0 0 20px #ef4444;">💀 Game Over!</h2>
+        <p id="finalScore" style="color:#fca5a5; font-size:1.1rem; margin-bottom:20px; font-family:'Noto Sans Sinhala',sans-serif;"></p>
+        <video id="gameOverVideo" style="width:90%; max-width:480px; border-radius:16px; border:2px solid #dc2626; box-shadow:0 0 30px rgba(220,38,38,0.6);" controls autoplay playsinline>
+            <source src="https://back-copper-ynajeqacq2.edgeone.app/snaptik_7632333238333115669_v3.mp4" type="video/mp4">
+        </video>
+        <button onclick="closeGameOver()" style="margin-top:20px; background:#dc2626; color:white; border:none; padding:12px 32px; border-radius:50px; font-size:1rem; font-weight:bold; cursor:pointer; font-family:'Noto Sans Sinhala',sans-serif;">🔄 නැවත ක්‍රීඩා කරන්න</button>
+    </div>
+
+    <script>
+        const bgVideo = document.getElementById('bgVideo');
+        function toggleBgVideo() {
+            if (bgVideo.paused) bgVideo.play();
+            else bgVideo.pause();
+        }
+        function showPage(id) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function startGame() {
+            document.getElementById('gameUI').classList.remove('hidden');
+            document.getElementById('startBtn').classList.add('hidden');
+            animate();
+        }
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const jumpSound = document.getElementById('jumpSound');
+        let playerY = 100, velY = 0, jumping = false, obstacleX = 400, score = 0, gameActive = false;
+        function jump() { if (!jumping && gameActive) { velY = -10; jumping = true; jumpSound.play(); } }
+        function animate() {
+            gameActive = true;
+            ctx.clearRect(0, 0, 400, 150);
+            velY += 0.5; playerY += velY;
+            if (playerY > 100) { playerY = 100; velY = 0; jumping = false; }
+            ctx.fillStyle = "white"; ctx.fillText("👻", 40, playerY + 25);
+            obstacleX -= 5;
+            if (obstacleX < -30) { obstacleX = 400; score += 10; document.getElementById('scoreBoard').innerText = "Score: " + score; }
+            ctx.fillStyle = "red"; ctx.fillRect(obstacleX, 110, 20, 20);
+            if (obstacleX < 60 && obstacleX > 20 && playerY > 80) { showGameOver(score); return; }
+            requestAnimationFrame(animate);
+        }
+        function showGameOver(finalScore) {
+            gameActive = false;
+            const overlay = document.getElementById('gameOverOverlay');
+            document.getElementById('finalScore').innerText = 'ඔබේ ලකුණු: ' + finalScore;
+            overlay.style.display = 'flex';
+            const vid = document.getElementById('gameOverVideo');
+            vid.currentTime = 0;
+            vid.play();
+        }
+        function closeGameOver() {
+            const overlay = document.getElementById('gameOverOverlay');
+            overlay.style.display = 'none';
+            document.getElementById('gameOverVideo').pause();
+            score = 0; obstacleX = 400; playerY = 100; velY = 0; jumping = false; gameActive = false;
+            document.getElementById('gameUI').classList.add('hidden');
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('scoreBoard').innerText = 'Score: 0';
+        }
+    </script>
+</body>
+</html>
